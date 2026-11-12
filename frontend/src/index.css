@@ -1,0 +1,140 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#fafafa] text-slate-800 font-sans antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight font-semibold text-slate-900;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Tiptap & Editorial Content Styling */
+.editorial-content {
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.25rem;
+  line-height: 1.85;
+  color: #1e293b;
+}
+
+.editorial-content p {
+  margin-bottom: 1.5rem;
+}
+
+.editorial-content h1,
+.editorial-content h2,
+.editorial-content h3 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  color: #0f172a;
+  margin-top: 2.25rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.editorial-content h1 {
+  font-size: 2.25rem;
+  line-height: 1.25;
+}
+
+.editorial-content h2 {
+  font-size: 1.75rem;
+  line-height: 1.35;
+}
+
+.editorial-content h3 {
+  font-size: 1.35rem;
+  line-height: 1.4;
+}
+
+.editorial-content ul {
+  list-style-type: disc;
+  padding-left: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.editorial-content ol {
+  list-style-type: decimal;
+  padding-left: 1.75rem;
+  margin-bottom: 1.5rem;
+}
+
+.editorial-content li {
+  margin-bottom: 0.5rem;
+}
+
+.editorial-content blockquote {
+  border-left: 4px solid #0c8ee9;
+  padding-left: 1.25rem;
+  font-style: italic;
+  color: #475569;
+  margin: 1.75rem 0;
+  background: #f8fafc;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-radius: 0 0.5rem 0.5rem 0;
+}
+
+.editorial-content pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.95rem;
+  margin: 1.5rem 0;
+}
+
+.editorial-content code:not(pre code) {
+  background: #f1f5f9;
+  color: #0c8ee9;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.3rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+}
+
+.editorial-content img {
+  border-radius: 0.75rem;
+  margin: 2rem 0;
+  width: 100%;
+  object-fit: cover;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+}
+
+/* Tiptap interactive editor container */
+.tiptap-editor .ProseMirror {
+  outline: none;
+  min-height: 380px;
+  padding: 1rem 1.25rem;
+  font-family: 'Newsreader', Georgia, serif;
+  font-size: 1.2rem;
+  line-height: 1.8;
+}
+
+.tiptap-editor .ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #94a3b8;
+  pointer-events: none;
+  height: 0;
+}

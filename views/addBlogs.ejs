@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('./partial/head') %>
+        <title>Add New Blog</title>
+        <style>
+            /* Custom enhancements on top of Bootstrap */
+            body {
+                background-color: #f8f9fa;
+                color: #333;
+            }
+
+            .form-container {
+                max-width: 700px;
+                background: #ffffff;
+                padding: 40px;
+                border-radius: 12px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+                margin-top: 50px;
+                margin-bottom: 50px;
+            }
+
+            .form-label {
+                font-weight: 600;
+                color: #495057;
+            }
+
+            .form-control {
+                border-radius: 8px;
+                padding: 10px 15px;
+                border: 1px solid #ced4da;
+            }
+
+            .form-control:focus {
+                box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+                border-color: #86b7fe;
+            }
+
+            textarea.form-control {
+                height: 180px !important;
+                resize: vertical;
+            }
+        </style>
+</head>
+
+<body>
+
+    <%- include('./partial/Navbsr') %>
+
+        <div class="container d-flex justify-content-center">
+            <div class="form-container w-100">
+                <h2 class="fw-bold mb-4 text-dark text-center">Create a New Blog Post</h2>
+
+                <form action="/blog" method="POST" enctype="multipart/form-data">
+
+                    <!-- Title Field -->
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Blog Title</label>
+                        <input type="text" class="form-control form-control-lg" id="title" name="title"
+                            placeholder="Enter an engaging title..." required>
+                    </div>
+
+                    <!-- Cover Image Field -->
+                    <div class="mb-3">
+                        <label for="coverImage" class="form-label">Cover Image</label>
+                        <input type="file" class="form-control" id="coverImage" name="coverImage" accept="image/*"
+                            required>
+                    </div>
+
+                    <!-- Body / Content Field -->
+                    <div class="mb-4">
+                        <label for="body" class="form-label">Blog Content</label>
+                        <textarea class="form-control" id="body" name="body"
+                            placeholder="Write your blog content here..." required></textarea>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg fw-semibold">Publish Blog</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+
+        <%- include('./partial/script') %>
+</body>
+
+</html>
