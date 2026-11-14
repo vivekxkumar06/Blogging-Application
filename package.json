@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "Professional Full-Stack Editorial Blogging Platform (MERN Stack)",
   "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "seed": "cd backend && npm run seed",

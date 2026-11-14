@@ -34,10 +34,10 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = "max-w-lg" }) => {
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           transition={{ duration: 0.2 }}
-          className={`relative w-full ${maxWidth} bg-white rounded-3xl shadow-float border border-slate-100 overflow-hidden z-10`}
+          className={`relative w-full ${maxWidth} max-h-[92vh] flex flex-col bg-white rounded-3xl shadow-float border border-slate-100 overflow-hidden z-10`}
         >
           {title && (
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 shrink-0">
               <h3 className="text-lg font-bold text-slate-900">{title}</h3>
               <button
                 onClick={onClose}
@@ -48,7 +48,7 @@ const Modal = ({ isOpen, onClose, title, children, maxWidth = "max-w-lg" }) => {
               </button>
             </div>
           )}
-          <div className="p-6">{children}</div>
+          <div className="p-6 overflow-y-auto">{children}</div>
         </motion.div>
       </div>
     </AnimatePresence>

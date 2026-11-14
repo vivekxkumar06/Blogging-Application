@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const fs = require("fs");
 const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
@@ -23,9 +24,23 @@ const app = express();
 connectDB();
 
 // Middlewares
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: [process.env.CLIENT_URL, "http://localhost:5173"].filter(Boolean),
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
+        callback(null, true);
+      } else {
+        callback(null, true);
+      }
+    },
     credentials: true,
   }),
 );
@@ -35,14 +50,6 @@ app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // Local uploads support
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-// Root route
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "BuildNotes Backend is running successfully!",
-  });
-});
 
 // Health check
 app.get("/api/health", (req, res) => {
@@ -64,6 +71,26 @@ app.use("/api/users", userRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
+
+// Serve frontend static build if available for live production website
+const frontendDistPath = path.join(__dirname, "../frontend/dist");
+if (fs.existsSync(frontendDistPath)) {
+  app.use(express.static(frontendDistPath));
+  app.get("*", (req, res, next) => {
+    if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) {
+      return next();
+    }
+    res.sendFile(path.join(frontendDistPath, "index.html"));
+  });
+} else {
+  // Root route fallback when frontend dist is not built
+  app.get("/", (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: "BuildNotes Backend is running successfully!",
+    });
+  });
+}
 
 // Error Handling
 app.use(notFound);

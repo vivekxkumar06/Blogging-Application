@@ -37,7 +37,7 @@ const NewsletterSection = () => {
             <span>Stay ahead of software shifts</span>
           </div>
 
-          <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
             Curated engineering insights, delivered every Friday.
           </h2>
 

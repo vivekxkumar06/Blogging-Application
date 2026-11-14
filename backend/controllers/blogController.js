@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Blog = require("../models/Blog");
 const Category = require("../models/Category");
 const Comment = require("../models/Comment");
@@ -139,9 +140,10 @@ const getBlogBySlug = async (req, res) => {
   try {
     const { slug } = req.params;
 
-    const blog = await Blog.findOne({
-      $or: [{ slug }, { _id: slug.match(/^[0-9a-fA-F]{24}$/) ? slug : null }],
-    })
+    const isObjectId = mongoose.Types.ObjectId.isValid(slug);
+    const query = isObjectId ? { $or: [{ slug }, { _id: slug }] } : { slug };
+
+    const blog = await Blog.findOne(query)
       .populate("author", "name avatar bio twitter github linkedin followers")
       .populate("category", "name slug color description");
 
