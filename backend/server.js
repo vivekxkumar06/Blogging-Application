@@ -1,4 +1,5 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const dns = require("dns");
 
@@ -7,7 +8,6 @@ dns.setServers(["8.8.8.8", "1.1.1.1"]);
 
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
 const fs = require("fs");
 
 const connectDB = require("./config/db");
