@@ -1,11 +1,17 @@
 import axios from "axios";
 
 const getBaseUrl = () => {
-  if (import.meta.env.VITE_API_URL) {
-    return import.meta.env.VITE_API_URL;
+  let url = import.meta.env.VITE_API_URL;
+  if (!url) {
+    return "/api";
   }
-  // If running on standard Vite port with proxy or served in production, use relative /api
-  return "/api";
+  // Remove trailing slash if present
+  url = url.trim().replace(/\/+$/, "");
+  // Ensure it points to /api
+  if (!url.endsWith("/api")) {
+    url += "/api";
+  }
+  return url;
 };
 
 const API = axios.create({

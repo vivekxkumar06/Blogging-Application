@@ -31,19 +31,29 @@ const app = express();
 // CORS Configuration
 const allowedOrigins = [
   process.env.CLIENT_URL,
+  "https://blogging-application-1-hkd4.onrender.com",
   "http://localhost:5173",
   "http://127.0.0.1:5173",
   "http://localhost:3000",
   "http://127.0.0.1:3000",
-].filter(Boolean);
+]
+  .filter(Boolean)
+  .map((origin) => origin.replace(/\/+$/, ""));
 
 app.use(
   cors({
     origin: (origin, callback) => {
+      // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      const normalizedOrigin = origin.replace(/\/+$/, "");
+
       if (
-        !origin ||
         process.env.NODE_ENV !== "production" ||
-        allowedOrigins.includes(origin)
+        allowedOrigins.includes(normalizedOrigin) ||
+        normalizedOrigin.endsWith(".onrender.com")
       ) {
         return callback(null, true);
       }
