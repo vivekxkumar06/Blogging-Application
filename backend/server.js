@@ -1,11 +1,18 @@
 require("dotenv").config();
 
+const dns = require("dns");
+
+// MongoDB DNS resolution
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const fs = require("fs");
+
 const connectDB = require("./config/db");
 
+// Routes
 const authRoutes = require("./routes/authRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const commentRoutes = require("./routes/commentRoutes");
@@ -16,14 +23,12 @@ const newsletterRoutes = require("./routes/newsletterRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
 
+// Error Middleware
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 
 const app = express();
 
-// Connect MongoDB
-connectDB();
-
-// Middlewares
+// CORS Configuration
 const allowedOrigins = [
   process.env.CLIENT_URL,
   "http://localhost:5173",
@@ -35,23 +40,28 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin) || process.env.NODE_ENV !== "production") {
-        callback(null, true);
-      } else {
-        callback(null, true);
+      if (
+        !origin ||
+        process.env.NODE_ENV !== "production" ||
+        allowedOrigins.includes(origin)
+      ) {
+        return callback(null, true);
       }
+
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
   }),
 );
 
+// Body Parser
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-// Local uploads support
+// Local Uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-// Health check
+// Health Check
 app.get("/api/health", (req, res) => {
   res.status(200).json({
     success: true,
@@ -72,18 +82,20 @@ app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/upload", uploadRoutes);
 
-// Serve frontend static build if available for live production website
+// Frontend Static Build
 const frontendDistPath = path.join(__dirname, "../frontend/dist");
+
 if (fs.existsSync(frontendDistPath)) {
   app.use(express.static(frontendDistPath));
+
   app.get("*", (req, res, next) => {
     if (req.path.startsWith("/api") || req.path.startsWith("/uploads")) {
       return next();
     }
+
     res.sendFile(path.join(frontendDistPath, "index.html"));
   });
 } else {
-  // Root route fallback when frontend dist is not built
   app.get("/", (req, res) => {
     res.status(200).json({
       success: true,
@@ -96,14 +108,27 @@ if (fs.existsSync(frontendDistPath)) {
 app.use(notFound);
 app.use(errorHandler);
 
-// Local development server
-if (require.main === module) {
-  const PORT = process.env.PORT || 5000;
+// Start Server After MongoDB Connection
+const startServer = async () => {
+  try {
+    await connectDB();
 
-  app.listen(PORT, () => {
-    console.log(`[BuildNotes Server running on port ${PORT}]`);
-  });
+    const PORT = process.env.PORT || 5000;
+
+    app.listen(PORT, () => {
+      console.log(`[BuildNotes Server running on port ${PORT}]`);
+    });
+  } catch (error) {
+    console.error("[Server Startup Failed]:", error.message);
+
+    process.exit(1);
+  }
+};
+
+// Local / Render Server Startup
+if (require.main === module) {
+  startServer();
 }
 
-// Export Express app for Vercel
+// Export Express App
 module.exports = app;
